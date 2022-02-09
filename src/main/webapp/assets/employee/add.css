@@ -1,0 +1,78 @@
+@charset "UTF-8";
+
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #C7EDCC;
+}
+
+.container {
+	position: absolute;
+	left: 20%;
+	top: 20%;
+}
+
+fieldset {
+	border: none;
+}
+
+legend {
+	font-size: 20px;
+	color: #0066CC;
+}
+
+.student-form>div>input[type=text] {
+	width: 420px;
+	height: 42px;
+	outline: none;
+	border: 1px solid #ccc;
+	font-size: 16px;
+}
+
+.student-form>div #d_id{
+	width: 120px;
+	height: 42px;
+	outline: none;
+	border: 1px solid #ccc;
+	font-size: 16px;
+}
+.student-form>div option{
+	font-size: 20px;
+}
+
+
+.student-form>div {
+	margin-bottom: 15px;
+}
+
+.student-form>div>label {
+	display: inline-block;
+	width: 100px;
+	text-align: right;
+}
+
+.student-form>div.div-wrapper>div {
+	display: inline-block;
+}
+
+.student-form>div.div-wrapper>div>* {
+	vertical-align: middle;
+}
+
+.student-form>div.div-wrapper>div>input {
+	width: 26px;
+	height: 26px;
+}
+
+button[type=submit] {
+	height: 40px;
+	width: 80px;
+	font-size: 16px;
+}
+
+button[type=reset] {
+	height: 40px;
+	width: 80px;
+	margin-left: 200px;
+	font-size: 16px;
+}

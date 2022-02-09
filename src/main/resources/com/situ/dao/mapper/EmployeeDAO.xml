@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.EmployeeDao">
+	<!-- 配置了一个sql片段 -->
+	<sql id="EmployeeColumns">
+		id,name,sex,birthday,salary,d_id,portrait
+	</sql>
+	
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Employee" id="EmployeeMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="sex" column="sex" />
+		<result property="birthday" column="birthday" />
+		<result property="salary" column="salary" />
+		<result property="d_id" column="d_id" />
+		<result property="portrait" column="portrait" />
+	</resultMap>
+	
+	
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Employee" id="FullEmployeeMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="sex" column="sex" />
+		<result property="birthday" column="birthday" />
+		<result property="salary" column="salary" />
+		<result property="d_id" column="d_id" />
+		<result property="portrait" column="portrait" />
+		
+		<!-- 配置一对一关联 -->
+		<association property="department" select="com.situ.dao.DepartmentDAO.findById" column="d_id"></association>
+		
+	</resultMap>
+	
+	<!-- 查询所有学生，因为要分页，所以要指定排序字段 -->
+	<!-- id要和dao接口中的方法名匹配 -->
+	<select id="findEmpAll" resultMap="FullEmployeeMap" parameterType="com.situ.model.EmployeeSearchBean">
+		select
+		<include refid="EmployeeColumns" />
+		from emp2
+		<where>
+		<if test="id!=null and id!=''">
+				and id = #{id}
+		</if>
+		<if test="name!=null and name!=''">
+			<!-- 拼出%%的形式 -->
+			<bind name="likename" value="'%'+name+'%'"/>
+			and name like #{likename}
+		</if>
+		<if test="sex!=null and sex!=''">
+				and sex = #{sex}
+		</if>
+		<if test="begin!=null and begin!=''">
+				and birthday >= #{begin}
+		</if>
+		<if test="end!=null and end!=''">
+			<!-- 需要在转义的字符情况下加上<![CDATA[  ]]>括起来 -->
+			<![CDATA[ and birthday < #{end} ]]>
+		
+		</if>
+		<if test="salary!=null and salary!=''">
+				and salary = #{salary}
+		</if>
+		<if test="d_id!=null and d_id!=''">
+				and d_id = #{d_id}
+		</if>
+		</where>
+		 order by id
+	</select>
+	
+	<!-- 根据编号批量删除 -->
+	<delete id="deleteByIds" >
+		delete from emp2
+		<where>
+			id in 
+			<foreach collection="ids" item="id" separator="," open="(" close=")">
+			 #{id}
+			</foreach>
+		</where>
+	</delete>
+	
+	<!--  保存一个员工信息-->
+	<insert id="save" parameterType="com.situ.model.Employee" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into emp2
+		values(
+			#{id},
+			#{name},
+			#{sex},
+			#{birthday},
+			#{salary},
+			#{d_id},
+			#{portrait}
+		)
+	</insert>
+	
+	
+	<!--通过id查找员工信息  -->
+	<select id="findById" resultMap="EmployeeMap" parameterType="java.lang.Integer">
+		select
+		<include refid="EmployeeColumns" />
+		from emp2 where id = #{id}
+	</select>
+	
+	<!-- 修改员工信息 -->
+	<update id="update" parameterType="com.situ.model.Employee" >
+		update emp2
+		<set>
+			id=#{id},
+			name=#{name},
+			sex=#{sex},
+			birthday=#{birthday},
+			salary=#{salary},
+			d_id=#{d_id},
+			portrait=#{portrait}
+		</set>
+		<where>
+				id = #{id}
+		</where>
+	</update>
+	
+	
+	
+	
+	
+	
+</mapper>

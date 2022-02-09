@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.DepartmentDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="DepartmentColumns">
+		id,name
+	</sql>
+	
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Department" id="DepartmentMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		
+	</resultMap>
+	
+	<!-- 查询所有学生，因为要分页，所以要指定排序字段 -->
+	<!-- id要和dao接口中的方法名匹配 -->
+	<select id="findDepartAll" resultMap="DepartmentMap" parameterType="com.situ.model.DepartmentSearchBean">
+		select
+		<include refid="DepartmentColumns" />
+		from department 
+		<where>
+		<if test="id!=null and id!=''">
+				and id = #{id}
+		</if>
+		<if test="name!=null and name!=''">
+			<!-- 拼出%%的形式 -->
+			<bind name="likename" value="'%'+name+'%'"/>
+			and name like #{likename}
+		</if>
+		</where>
+		
+		order by id
+	</select>
+	
+	<!-- 根据编号批量删除 -->
+	<delete id="deleteByIds" >
+		delete from department 
+		<where>
+			id in 
+			<foreach collection="ids" item="id" separator="," open="(" close=")">
+			 #{id}
+			</foreach>
+		</where>
+	</delete>
+	
+	<!--保存一个部门信息  -->
+	<insert id="save" parameterType="com.situ.model.Department" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into department 
+		values(
+			#{id},
+			#{name},
+		)
+	</insert>
+	
+	<!--  通过id查找部门信息 -->
+	<select id="findById" resultMap="DepartmentMap" parameterType="java.lang.Integer">
+		select
+		<include refid="DepartmentColumns" />
+		from department where id = #{id}
+	</select>
+	
+	
+	<!--修改部门信息  -->
+	<update id="update" parameterType="com.situ.model.Department" >
+		update emp2
+		<set>
+			id=#{id},
+			name=#{name},
+			
+		</set>
+		<where>
+				id = #{id}
+		</where>
+	</update>
+	
+	<!--  查询部门的所有id -->
+	<select id="find" resultMap="DepartmentMap">
+	 	select 
+	 	<include refid="DepartmentColumns" />
+	 	from department
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>
